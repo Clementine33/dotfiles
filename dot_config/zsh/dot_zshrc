@@ -11,15 +11,14 @@ _qc-comp()   { (( $+commands[$1] )) && smartcache comp $@ }
 # zinit
 #--------------------------------#
 
-# p10k instant prompt
-# _qc-source $XDG_CACHE_HOME/p10k-instant-prompt-${(%):-%n}.zsh
-
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
+
+
 #--------------------------------#
 # Programs
 #--------------------------------#
@@ -35,6 +34,7 @@ zinit wait'1' lucid \
 zinit ice from"gh-r" as"program"
 zinit light junegunn/fzf
 
+
 #--------------------------------#
 # plugin
 #--------------------------------#
@@ -49,9 +49,9 @@ zinit light Aloxaf/fzf-tab
 	
 # zoxide
 zinit ice wait"2" as"command" from"gh-r" lucid \
-  mv"zoxide*/zoxide -> zoxide" \
   atclone"./zoxide init zsh > init.zsh" \
   atpull"%atclone" src"init.zsh" nocompile'!'
+#  mv"zoxide*/zoxide -> zoxide" \
 zinit light ajeetdsouza/zoxide	
 
 # Autosuggestions & fast-syntax-highlighting
@@ -71,7 +71,7 @@ zinit ice atclone"dircolors -b dircolors.ansi-universal > clrs.zsh" \
 zinit light seebi/dircolors-solarized
 
 # load powerlevel10k theme
-zinit ice wait'!' lucid atload'true; _p9k_precmd' nocd depth"1"
+# zinit ice wait'!' lucid atload'true; _p9k_precmd' nocd depth"1"
 zinit light romkatv/powerlevel10k
 
 zstyle ':completion:*' use-cache true
@@ -82,6 +82,7 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-preview 'ps --pid=$word -o cmd --no-headers -w -w'
 zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags '--preview-window=down:3:wrap'
+
 
 #--------------------------------#
 # Alias
