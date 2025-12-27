@@ -23,9 +23,11 @@ autoload -Uz _zinit
 # Programs
 #--------------------------------#
 
-#eza
+#jq
 zinit ice from"gh-r" as"program" mv"jq-* -> jq"
 zinit light jqlang/jq
+
+#eza
 zinit wait'1' lucid \
 	from"gh-r" as"program" pick"eza" \
 	light-mode for @eza-community/eza
@@ -33,6 +35,13 @@ zinit wait'1' lucid \
 # fzf	
 zinit ice from"gh-r" as"program"
 zinit light junegunn/fzf
+
+# yazi
+zinit ice from"gh-r" as"program" \
+    atclone"mv -f yazi-*/yazi . && mv -f yazi-*/ya . && mv -f yazi-*/completions/_*~*.ps1 . && rm -rf yazi-*/" \
+    atpull"%atclone" \
+    pick"yazi"
+zinit light sxyazi/yazi
 
 
 #--------------------------------#
@@ -90,6 +99,13 @@ zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags '--preview-window=down:3
 
 alias l='eza -lagh --git --time-style=long-iso'
 
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
 
 #--------------------------------#
 # Config 
