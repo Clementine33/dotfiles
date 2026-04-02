@@ -16,7 +16,7 @@ _qc-comp()   { (( $+commands[$1] )) && smartcache comp $@ }
 
 
 # Zstyle Configuration Tree
-(( $+commands[vivid] )) && export LS_COLORS="$(vivid generate solarized-dark)"
+(( $+commands[vivid] )) && export LS_COLORS="$(vivid generate catppuccin-macchiato)"
 zstyle ':completion:*' use-cache true
 zstyle ':completion:*' sort false
 zstyle ':completion:*:descriptions' format '[%d]'
@@ -30,6 +30,7 @@ zstyle ':fzf-tab:complete:kill:argument-rest' fzf-flags '--preview-window=down:3
 
 zstyle ":history-search-multi-word" page-size "11"
 
+fpath=("$ZDOTDIR/.zfunc" $fpath)
 
 # Zimfw
 ZIM_CONFIG_FILE=~/.config/zsh/.zimrc
@@ -57,7 +58,10 @@ _qc-source "$ZDOTDIR/.p10k.zsh"
 
 #　Internal Functions and Aliases
 
+alias c='clear'
+alias v='nvim'
 alias l='eza -lgh --git --time-style=long-iso'
+alias ze='zellij'
 
 function y() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
