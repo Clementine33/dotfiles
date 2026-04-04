@@ -1,0 +1,17 @@
+# Theme
+zmodule romkatv/powerlevel10k --use degit
+
+# smartacge
+zmodule QuarticCat/zsh-smartcache
+
+# Completion engine (must be placed first)
+zmodule zsh-users/zsh-completions --fpath src
+zmodule completion
+zmodule Aloxaf/fzf-tab
+
+# History search
+zmodule zdharma-continuum/history-search-multi-word
+
+# Auto-suggestions and syntax highlighting (highlighting must be last)
+zmodule zsh-users/zsh-autosuggestions
+zmodule zdharma-continuum/fast-syntax-highlighting
