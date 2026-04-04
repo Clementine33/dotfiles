@@ -1,17 +1,33 @@
+typeset -U path PATH
+
+_qc-path() {
+    [[ -d "$1" ]] && path=("$1" "${path[@]}")
+}
+
+_qc-env() {
+    if [[ -d "$2" ]]; then
+        export $1="$2"
+        path=("$2/${3:-bin}" "${path[@]}")
+    fi
+}
+
 export XDG_CONFIG_HOME=~/.config
 export XDG_CACHE_HOME=~/.cache
 export XDG_DATA_HOME=~/.local/share
-
-# export GTK_IM_MODULE='fcitx'
-# export QT_IM_MODULE='fcitx'
-# export XMODIFIERS='@im=fcitx'
-# export SDL_IM_MODULE='fcitx'
-# export GLFW_IM_MODULE='ibux'
-
-export EDITOR='vim'
-export VISUAL='vim'
-export LC_ALL=en_US.utf8 
-
 ZDOTDIR=$XDG_CONFIG_HOME/zsh
+export PATH="$HOME/.local/bin:$PATH"
 
-typeset -U path  # set unique (fpath is already unique)
+export EDITOR='nvim'
+export VISUAL='nvim'
+export LC_ALL=en_US.utf8
+
+if [[ -z "$_QC_ENV_LOADED" ]]; then
+	_qc-path "$XDG_DATA_HOME/mise/installs/neovim/latest/bin"
+	_qc-path "$HOME/.local/share/fnm"
+	_qc-path "$HOME/.local/share/pnpm"
+	_qc-path "/usr/local/go/bin"
+	_qc-path "$HOME/.local/share/flutter/bin"
+	_qc-env BUN_INSTALL "$HOME/.bun"
+fi
+
+skip_global_compinit=1
