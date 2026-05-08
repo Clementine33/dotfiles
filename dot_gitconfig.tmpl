@@ -1,0 +1,43 @@
+{{- if eq .is_git_setup "yes" -}}
+[user]
+    name = {{ .git_name | quote }}
+    email = {{ .git_email | quote }}
+    signingkey = {{ output "sh" "-c" "gpg --list-secret-keys --keyid-format LONG 2>/dev/null | awk '/^sec/{split($2,a,\"/\"); print a[2]}'" | trim }}
+[core]
+    autocrlf = input
+    editor = nvim
+    untrackedCache = true
+    fsmonitor = true
+    excludesfile = ~/.gitignore_global
+[color]
+    ui = true
+[commit]
+    gpgsign = true
+[fetch]
+    prune = true
+[init]
+    defaultBranch = main
+[pull]
+    rebase = true
+[push]
+    autoSetupRemote = true
+    default = simple
+[rebase]
+    autoStash = true
+    updateRefs = true
+[rerere]
+    enabled = true
+    autoupdate = true
+[diff]
+    algorithm = histogram
+    colorMoved = default
+[merge]
+    conflictstyle = zdiff3
+[alias]
+    cat = commit --amend --no-edit
+    lg = "log --graph --pretty=format:'%C(#f5a97f)%h%Creset %C(#8aadf4)%ad%Creset%C(auto)%d %C(#cad3f5)%s %C(#a6da95)(%cr) %C(#a5adce)<%an>%Creset' --abbrev-commit --date=short"
+    pf = push --force-with-lease
+    st = status --short --branch
+    us = reset HEAD --
+    du = diff @{upstream}
+{{- end }}

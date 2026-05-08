@@ -1,0 +1,11 @@
+{{- $choices := list "yes" "no" -}}
+{{- $is_git_setup := promptChoiceOnce . "is_git_setup" "Need to set up Git" $choices -}}
+
+{{- if eq .chezmoi.os "linux" -}}
+[data]
+is_git_setup = {{ $is_git_setup | quote }}
+{{- if eq $is_git_setup "yes" }}
+git_name = "Clementine33"
+git_email = "dagger0603@gmail.com"
+{{- end }}
+{{- end }}

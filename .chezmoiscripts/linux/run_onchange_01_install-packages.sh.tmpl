@@ -1,0 +1,14 @@
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/bash
+
+MISE_BIN="$HOME/.local/bin/mise"
+
+if [[ ! -x "$MISE_BIN" ]]; then
+    curl -fsSL https://mise.run | sh
+fi
+
+if [[ -x "$MISE_BIN" ]]; then
+    "$MISE_BIN" install bat btop eza fd fzf jq neovim rg usage vivid yazi zellij zoxide
+    "$MISE_BIN" use -g bat btop eza fd fzf jq neovim rg usage vivid yazi zellij zoxide
+fi
+{{- end }}
