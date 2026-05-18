@@ -2,7 +2,11 @@
 [user]
     name = {{ .git_name | quote }}
     email = {{ .git_email | quote }}
-    signingkey = {{ output "sh" "-c" "gpg --list-secret-keys --keyid-format LONG 2>/dev/null | awk '/^sec/{split($2,a,\"/\"); print a[2]}'" | trim }}
+    signingkey = ~/.ssh/id_ed25519_git
+[commit]
+    gpgsign = true
+[gpg]
+    format = ssh
 [core]
     autocrlf = input
     editor = nvim
@@ -11,8 +15,6 @@
     excludesfile = ~/.gitignore_global
 [color]
     ui = true
-[commit]
-    gpgsign = true
 [fetch]
     prune = true
 [init]
