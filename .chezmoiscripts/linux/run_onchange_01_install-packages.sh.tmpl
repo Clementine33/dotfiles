@@ -2,13 +2,20 @@
 #!/bin/bash
 
 MISE_BIN="$HOME/.local/bin/mise"
+TOOLS=(bat btop eza fd fzf jq neovim rg vivid yazi zellij zoxide)
+MISSING=()
 
 if [[ ! -x "$MISE_BIN" ]]; then
     curl -fsSL https://mise.run | sh
 fi
 
 if [[ -x "$MISE_BIN" ]]; then
-    "$MISE_BIN" install bat btop eza fd fzf jq neovim rg usage vivid yazi zellij zoxide
-    "$MISE_BIN" use -g bat btop eza fd fzf jq neovim rg usage vivid yazi zellij zoxide
+    for t in "${TOOLS[@]}"; do
+        "$MISE_BIN" ls "$t" --installed &>/dev/null || MISSING+=("$t")
+    done
+    if [[ ${#MISSING[@]} -gt 0 ]]; then
+        "$MISE_BIN" install "${MISSING[@]}"
+        "$MISE_BIN" use -g "${MISSING[@]}"
+    fi
 fi
 {{- end }}

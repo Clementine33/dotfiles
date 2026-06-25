@@ -1,13 +1,13 @@
 typeset -U path PATH
 
-_qc-path() {
-    [[ -d "$1" ]] && path=("$1" "${path[@]}")
-}
+# _qc-path() {
+#     [[ -d "$1" ]] && path=("$1" "${path[@]}")
+# }
 
 _qc-env() {
     if [[ -d "$2" ]]; then
         export $1="$2"
-        path=("$2/${3:-bin}" "${path[@]}")
+        # path=("$2/${3:-bin}" "${path[@]}")
     fi
 }
 
@@ -23,7 +23,8 @@ export LC_ALL=en_US.utf8
 
 export GPG_TTY=$(tty)
 
-# if [[ -z "$_QC_ENV_LOADED" ]]; then
-# fi
+if [[ -z "$_QC_ENV_LOADED" ]]; then
+    _qc-env BUN_INSTALL $HOME/.cache/.bun
+fi
 
 skip_global_compinit=1
