@@ -12,9 +12,12 @@ _qc-env() {
     fi
 }
 
-export XDG_CONFIG_HOME=~/.config
-export XDG_CACHE_HOME=~/.cache
-export XDG_DATA_HOME=~/.local/share
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_STATE_HOME=$HOME/.local/state
+export XDG_RUNTIME_DIR=/run/user/$UID
+
 ZDOTDIR=$XDG_CONFIG_HOME/zsh
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -23,7 +26,7 @@ export VISUAL='nvim'
 export LC_ALL=en_US.utf8
 
 # mise's rust backend unsets RUSTUP_HOME/CARGO_HOME during activate and falls
-# back to ~/.rustup/~/.cargo, so pin them via mise's dedicated vars instead.
+# back to $HOME.rustup/ $HOME/.cargo, so pin them via mise's dedicated vars instead.
 export MISE_RUSTUP_HOME=$XDG_DATA_HOME/rustup
 export MISE_CARGO_HOME=$XDG_DATA_HOME/cargo
 
