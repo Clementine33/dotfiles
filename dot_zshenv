@@ -27,6 +27,13 @@ export LC_ALL=en_US.utf8
 export MISE_RUSTUP_HOME=$XDG_DATA_HOME/rustup
 export MISE_CARGO_HOME=$XDG_DATA_HOME/cargo
 
+# Pub cache now holds only downloadable packages (global tools moved to
+# `dart install`), so it's pure cache and belongs in CACHE, not DATA.
+export PUB_CACHE=$XDG_CACHE_HOME/pub
+
+# `dart install` puts globally installed CLI tools here (AOT binaries).
+export DART_DATA_HOME=$XDG_DATA_HOME/dart
+
 if [[ -z "$_QC_ENV_LOADED" ]]; then
     _qc-env GOPATH $XDG_DATA_HOME/go
     _qc-env CARGO_HOME $XDG_DATA_HOME/cargo
@@ -39,5 +46,6 @@ fi
 _qc-path "$BUN_INSTALL/bin"
 _qc-path "$PNPM_HOME"
 _qc-path "$CARGO_HOME/bin"
+_qc-path "$DART_DATA_HOME/install/bin"
 
 skip_global_compinit=1
