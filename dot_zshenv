@@ -22,14 +22,22 @@ export EDITOR='nvim'
 export VISUAL='nvim'
 export LC_ALL=en_US.utf8
 
+# mise's rust backend unsets RUSTUP_HOME/CARGO_HOME during activate and falls
+# back to ~/.rustup/~/.cargo, so pin them via mise's dedicated vars instead.
+export MISE_RUSTUP_HOME=$XDG_DATA_HOME/rustup
+export MISE_CARGO_HOME=$XDG_DATA_HOME/cargo
+
 if [[ -z "$_QC_ENV_LOADED" ]]; then
-    _qc-env BUN_INSTALL $HOME/.cache/.bun
-    _qc-env PNPM_HOME $HOME/.local/share/pnpm
+    _qc-env GOPATH $XDG_DATA_HOME/go
+    _qc-env CARGO_HOME $XDG_DATA_HOME/cargo
+    _qc-env RUSTUP_HOME $XDG_DATA_HOME/rustup
+    _qc-env BUN_INSTALL $XDG_DATA_HOME/bun
+    _qc-env PNPM_HOME $XDG_DATA_HOME/pnpm
     _QC_ENV_LOADED=1
 fi
 
 _qc-path "$BUN_INSTALL/bin"
 _qc-path "$PNPM_HOME"
-_qc-source "$HOME/.cargo/env"
+_qc-path "$CARGO_HOME/bin"
 
 skip_global_compinit=1
