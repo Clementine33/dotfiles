@@ -38,7 +38,7 @@ _qc-source ${ZIM_HOME}/init.zsh
 
 
 # Package Managers and Binary CLI Integration
-_qc-eval mise activate zsh
+(( $+commands[mise] )) && eval "$(mise activate zsh)"
 _qc-eval zoxide init zsh
 _qc-eval fzf --zsh
 
