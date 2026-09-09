@@ -10,10 +10,12 @@ if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
       https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
 fi
 
-# Install missing modules and update ${ZIM_HOME}/init.zsh if missing or outdated.
-# zimfw.zsh calls "zimfw ${@}" at the top level when sourced, so we pass "init"
-# as a source argument instead of running it separately.
+# If ${ZIM_HOME}/init.zsh is missing or older than ${ZIM_CONFIG_FILE}, regenerate
+# it ("init"), then install the modules declared in .zimrc ("install").
+# zimfw.zsh calls "zimfw ${@}" at the top level when sourced and only dispatches
+# on the first argument, so "init" and "install" run as separate source calls.
 if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE} ]]; then
   zsh -c "source ${ZIM_HOME}/zimfw.zsh init"
+  zsh -c "source ${ZIM_HOME}/zimfw.zsh install"
 fi
 {{- end }}

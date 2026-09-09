@@ -46,6 +46,7 @@ autoload -Uz zmv
 
 _qc-source "$ZDOTDIR/.p10k.zsh"
 
+bindkey -e
 
 #　Internal Functions and Aliases
 alias c='clear'
@@ -73,6 +74,7 @@ cp_local() {
 }
 
 _qc-source "$ZDOTDIR/zfunc/_proxy_env"
+_qc-source "$ZDOTDIR/zfunc/_conda"
 
 
 # Tool Environment Configuration
@@ -83,10 +85,9 @@ export FZF_DEFAULT_OPTS='--ansi --height=60% --reverse --cycle'
 autoload -Uz add-zsh-hook
 _qc-iterm2-precmd() { echo -n "\x1b]1337;CurrentDir=$(pwd)\x07" }
 add-zsh-hook precmd _qc-iterm2-precmd
-{{ if .is_wsl }}
-# wsl-ssh-agent-relay
+
+{{ if .is_wsl }}# wsl-ssh-agent-relay
 ${HOME}/.local/bin/wsl-ssh-agent-relay start
 export SSH_AUTH_SOCK=${HOME}/.ssh/wsl-ssh-agent.sock
-{{- end}}
-
-
+{{ else if (default false (index . "is_graphical")) }}export SSH_AUTH_SOCK="$HOME/.bitwarden-ssh-agent.sock"
+{{ end }}

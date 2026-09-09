@@ -1,14 +1,20 @@
 typeset -U path PATH
 
 _qc-path() {
-    [[ -d "$1" ]] && path=("$1" "${path[@]}")
+    # When the variable is not set, “$VAR/bin” expands to literal /bin and mixes into PATH, so add a non-empty check first
+    [[ -n "$1" && -d "$1" ]] && path=("$1" "${path[@]}")
 }
 
 _qc-source() { [[ -f $1 ]] && source $1 }
 
+_qc-mise() {
+    print -r -- "$XDG_DATA_HOME/mise/shims/$1"
+}
+
+# $1=variable name $2=package root $3=detection entry point (must be explicitly specified); export only if the entry point exists
 _qc-env() {
-    if [[ -d "$2" ]]; then
-        export $1="$2"
+    if [[ -n $3 && -e $3 ]]; then
+        export "$1=$2"
     fi
 }
 
@@ -23,7 +29,11 @@ export PATH="$HOME/.local/bin:$PATH"
 
 export EDITOR='nvim'
 export VISUAL='nvim'
-export LC_ALL=en_US.utf8
+
+export LC_CTYPE=zh_CN.UTF-8
+export LANG=en_US.UTF-8
+export LC_MESSAGES=en_US.UTF-8
+unset LANGUAGE
 
 # mise's rust backend unsets RUSTUP_HOME/CARGO_HOME during activate and falls
 # back to $HOME.rustup/ $HOME/.cargo, so pin them via mise's dedicated vars instead.
@@ -38,17 +48,17 @@ export PUB_CACHE=$XDG_CACHE_HOME/pub
 export DART_DATA_HOME=$XDG_DATA_HOME/dart
 
 if [[ -z "$_QC_ENV_LOADED" ]]; then
-    _qc-env GOPATH $XDG_DATA_HOME/go
-    _qc-env CARGO_HOME $XDG_DATA_HOME/cargo
-    _qc-env RUSTUP_HOME $XDG_DATA_HOME/rustup
-    _qc-env BUN_INSTALL $XDG_DATA_HOME/bun
-    _qc-env PNPM_HOME $XDG_DATA_HOME/pnpm
+    _qc-env GOPATH      $XDG_DATA_HOME/go      "$(_qc-mise go)"
+    _qc-env CARGO_HOME  $XDG_DATA_HOME/cargo   "$(_qc-mise cargo)"
+    _qc-env RUSTUP_HOME $XDG_DATA_HOME/rustup  "$(_qc-mise rustup)"
+    _qc-env BUN_INSTALL $XDG_DATA_HOME/bun     "$(_qc-mise bun)"
+    _qc-env PNPM_HOME   $XDG_DATA_HOME/pnpm    "$(_qc-mise pnpm)"
     _QC_ENV_LOADED=1
 fi
 
-_qc-path "$BUN_INSTALL/bin"
-_qc-path "$PNPM_HOME"
-_qc-path "$CARGO_HOME/bin"
+[[ -n "$BUN_INSTALL" ]] && _qc-path "$BUN_INSTALL/bin"
+[[ -n "$PNPM_HOME" ]] && _qc-path "$PNPM_HOME"
+[[ -n "$CARGO_HOME" ]] && _qc-path "$CARGO_HOME/bin"
 _qc-path "$DART_DATA_HOME/install/bin"
 
 skip_global_compinit=1

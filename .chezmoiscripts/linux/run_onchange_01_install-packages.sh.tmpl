@@ -1,6 +1,8 @@
-{{ if eq .chezmoi.os "linux" -}}
+{{ if and (eq .chezmoi.os "linux") (or (default false (index . "is_wsl")) (not (default false (index . "is_graphical")))) -}}
 #!/bin/bash
 
+# Only auto-install this CLI toolchain via mise on non-graphical Linux
+# (WSL / headless servers). Graphical desktops manage their own tools.
 MISE_BIN="$HOME/.local/bin/mise"
 TOOLS=(bat btop eza fd fzf jq neovim rg vivid yazi zellij zoxide)
 MISSING=()
@@ -10,6 +12,9 @@ if [[ ! -x "$MISE_BIN" ]]; then
 fi
 
 if [[ -x "$MISE_BIN" ]]; then
+    # Enable automatic mise self-updates.
+    "$MISE_BIN" settings set auto_update true
+
     for t in "${TOOLS[@]}"; do
         "$MISE_BIN" ls "$t" --installed &>/dev/null || MISSING+=("$t")
     done

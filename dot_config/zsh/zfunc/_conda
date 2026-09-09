@@ -1,0 +1,29 @@
+# Miniforge/conda install root. Plain (unexported) shell variable: only the
+# shims below read it, so keep it out of the environment.
+CONDA_HOME=/opt/miniforge
+
+# No conda on this machine: bail out so `conda` stays a normal
+# command-not-found instead of defining a broken shim. (_conda is only ever
+# sourced from dot_zshrc, where top-level return aborts the source.)
+[[ -d "$CONDA_HOME" ]] || return
+
+conda() {
+    local conda_sh="$CONDA_HOME/etc/profile.d/conda.sh"
+    if [ -f "$conda_sh" ]; then
+        unset -f conda
+        # shellcheck source=/dev/null
+        . "$conda_sh"
+        conda config --set auto_activate_base false 2>/dev/null || true
+        conda "$@"
+    else
+        printf "Error: %s not found\n" "$conda_sh" >&2
+        return 1
+    fi
+}
+conda_deactctivate() {
+    [ -n "$CONDA_SHLVL" ] && conda deactivate 2>/dev/null || true
+    PATH=$(echo "$PATH" | tr ':' '\n' | grep -Fv "$CONDA_HOME" | tr '\n' ':' | sed 's/:$//')
+    export PATH
+    unset CONDA_EXE CONDA_PYTHON_EXE CONDA_PREFIX CONDA_DEFAULT_ENV CONDA_PROMPT_MODIFIER CONDA_SHLVL
+    unset -f conda __conda_activate __conda_reactivate __conda_hashr
+}

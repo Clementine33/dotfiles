@@ -3,10 +3,13 @@
 
 {{- $is_wsl := and (eq .chezmoi.os "linux") (contains "microsoft" .chezmoi.kernel.osrelease) -}}
 
+{{- $is_graphical := and (eq .chezmoi.os "linux") (ne (or (lookPath "wayland-info") (lookPath "Xorg") (lookPath "weston") (env "WAYLAND_DISPLAY") (env "DISPLAY")) "") -}}
+
 {{- if eq .chezmoi.os "linux" -}}
 [data]
 is_git_setup = {{ $is_git_setup | quote }}
 is_wsl = {{ $is_wsl }}
+is_graphical = {{ $is_graphical }}
 {{- if eq $is_git_setup "yes" }}
 git_name = "Clementine33"
 git_email = "dagger0603@gmail.com"
