@@ -4,7 +4,10 @@
 # Only auto-install this CLI toolchain via mise on non-graphical Linux
 # (WSL / headless servers). Graphical desktops manage their own tools.
 MISE_BIN="$HOME/.local/bin/mise"
-TOOLS=(bat btop eza fd fzf jq neovim rg vivid yazi zellij zoxide)
+# neovim is spelled out because mise's default backend for it is vfox, whose
+# install hook calls api.github.com and dies with HTTP 403 under the anonymous
+# 60 req/h rate limit. The aqua backend downloads straight from the release URL.
+TOOLS=(bat btop eza fd fzf jq aqua:neovim rg vivid yazi zellij zoxide)
 MISSING=()
 
 if [[ ! -x "$MISE_BIN" ]]; then
@@ -16,13 +19,17 @@ if [[ -x "$MISE_BIN" ]]; then
     "$MISE_BIN" settings set auto_update true
 
     # `mise ls --installed` always exits 0 and prints an empty list when the
-    # tool is absent, so inspect the output instead of the exit code.
+    # tool is absent, so inspect the output instead of the exit code. A tool
+    # that is installed but not `active` is not referenced by any config file,
+    # so its shim only ever fails with "No version is set for shim".
     for t in "${TOOLS[@]}"; do
-        [[ "$("$MISE_BIN" ls "$t" --installed --json 2>/dev/null)" == "[]" ]] && MISSING+=("$t")
+        [[ "$("$MISE_BIN" ls "$t" --installed --json 2>/dev/null)" != *'"active": true'* ]] && MISSING+=("$t")
     done
-    if [[ ${#MISSING[@]} -gt 0 ]]; then
-        "$MISE_BIN" install "${MISSING[@]}"
-        "$MISE_BIN" use -g "${MISSING[@]}"
-    fi
+    # `mise use -g` writes the config all-or-nothing, so one unresolvable tool
+    # (a registry hiccup, a rate-limited backend) would leave every other tool
+    # installed with no version set. Do it per tool and keep going.
+    for t in "${MISSING[@]}"; do
+        "$MISE_BIN" use -g "$t" || echo "mise: failed to install $t" >&2
+    done
 fi
 {{- end }}
