@@ -57,7 +57,7 @@ if [[ -z "$_QC_ENV_LOADED" ]]; then
 fi
 
 [[ -n "$BUN_INSTALL" ]] && _qc-path "$BUN_INSTALL/bin"
-[[ -n "$PNPM_HOME" ]] && _qc-path "$PNPM_HOME"
+[[ -n "$PNPM_HOME" ]] && _qc-path "$PNPM_HOME/bin"
 [[ -n "$CARGO_HOME" ]] && _qc-path "$CARGO_HOME/bin"
 _qc-path "$DART_DATA_HOME/install/bin"
 

@@ -15,8 +15,10 @@ if [[ -x "$MISE_BIN" ]]; then
     # Enable automatic mise self-updates.
     "$MISE_BIN" settings set auto_update true
 
+    # `mise ls --installed` always exits 0 and prints an empty list when the
+    # tool is absent, so inspect the output instead of the exit code.
     for t in "${TOOLS[@]}"; do
-        "$MISE_BIN" ls "$t" --installed &>/dev/null || MISSING+=("$t")
+        [[ "$("$MISE_BIN" ls "$t" --installed --json 2>/dev/null)" == "[]" ]] && MISSING+=("$t")
     done
     if [[ ${#MISSING[@]} -gt 0 ]]; then
         "$MISE_BIN" install "${MISSING[@]}"
